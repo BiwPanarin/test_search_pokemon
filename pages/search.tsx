@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useLazyQuery } from '@apollo/client';
 import client from '../lib/apollo-client';
