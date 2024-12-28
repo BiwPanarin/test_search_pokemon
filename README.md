@@ -1,6 +1,6 @@
 # แอปค้นหา Pokémon
 
-แอปนี้เป็นแอปพลิเคชันสำหรับค้นหา Pokémon ที่พัฒนาด้วย **Next.js**, **Apollo Client** และ **GraphQL** โดยผู้ใช้สามารถค้นหา Pokémon ตามชื่อหรือ ID ดูข้อมูลรายละเอียด และกรอง Pokémon ตามประเภทหรือจำนวนที่ต้องการแสดง
+แอปนี้เป็นแอปพลิเคชันสำหรับค้นหา Pokémon ที่พัฒนาด้วย **Next.js**, **Apollo Client** และ **GraphQL** โดยผู้ใช้สามารถกดที่ Pokémon ได้โดยตรงที่หน้า Home หรือ ค้นหา Pokémon ตามชื่อหรือ ID ดูข้อมูลรายละเอียด และกรอง Pokémon ตามประเภทหรือจำนวนที่ต้องการแสดง
 
 ---
 
@@ -12,7 +12,7 @@
 - **ดีไซน์ Web** รองรับการแสดงผลบนทุกอุปกรณ์ด้วย Bootstrap
 - ดึงข้อมูลจาก [GraphQL Pokémon API](https://graphql-pokemon2.vercel.app)
 - รองรับ **Static Optimization** และการปรับปรุงข้อมูลแบบ Incremental Static Regeneration เพื่อประสิทธิภาพสูงสุด
-- สามารถ **Test Suite** ด้วย Jest ได้
+- สามารถ **Test Suite** ด้วย Jest ได้ ผ่านคำสั่ง npm run test
 
 ---
 
