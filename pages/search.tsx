@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { gql, useLazyQuery } from '@apollo/client';
 import client from '../lib/apollo-client';
 
+// GraphQL Query
 const GET_POKEMON = gql`
   query GetPokemon($id: String, $name: String) {
     pokemon(id: $id, name: $name) {
@@ -41,11 +42,30 @@ const GET_POKEMON = gql`
   }
 `;
 
+interface Pokemon {
+  id: string;
+  number: string;
+  name: string;
+  image: string;
+  types: string[];
+  weight: { minimum: string; maximum: string };
+  height: { minimum: string; maximum: string };
+  classification: string;
+  resistant: string[];
+  weaknesses: string[];
+  fleeRate: number;
+  maxCP: number;
+  maxHP: number;
+  attacks: { special: { name: string; type: string; damage: number }[] };
+  evolutions?: { id: string; name: string; image: string }[];
+}
+
 export default function Search() {
   const [query, setQuery] = useState('');
   const router = useRouter();
-  const [fetchPokemon, { loading, data, error }] = useLazyQuery(GET_POKEMON, { client });
+  const [fetchPokemon, { loading, data, error }] = useLazyQuery<{ pokemon: Pokemon }>(GET_POKEMON, { client });
 
+  // Fetch Pokémon เมื่อ query parameters เปลี่ยน
   useEffect(() => {
     if (router.query.name) {
       setQuery(router.query.name as string);
@@ -57,9 +77,7 @@ export default function Search() {
   }, [router.query.name, router.query.id]);
 
   const handleSearch = () => {
-    const variables = query.startsWith('UG9rZW1vbj')
-      ? { id: query }
-      : { name: query };
+    const variables = query.startsWith('UG9rZW1vbj') ? { id: query } : { name: query };
 
     fetchPokemon({ variables });
 
@@ -77,31 +95,17 @@ export default function Search() {
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container">
-          <a className="navbar-brand" href="/">
-            Pokémon App
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+          <a className="navbar-brand" href="/">Pokémon App</a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" href="/">
-                  Home
-                </a>
+                <a className="nav-link" href="/">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/search">
-                  Search
-                </a>
+                <a className="nav-link" href="/search">Search</a>
               </li>
             </ul>
           </div>
@@ -135,58 +139,30 @@ export default function Search() {
             <img src={pokemon.image} className="card-img-top" alt={pokemon.name} />
             <div className="card-body">
               <h2 className="card-title text-center">{pokemon.name}</h2>
-              <p className="card-text">
-                <strong>Id:</strong> {pokemon.id}
-              </p>
-              <p className="card-text">
-                <strong>Number:</strong> {pokemon.number}
-              </p>
-              <p className="card-text">
-                <strong>Classification:</strong> {pokemon.classification}
-              </p>
-              <p className="card-text">
-                <strong>Types:</strong> {pokemon.types.join(', ')}
-              </p>
-              <p className="card-text">
-                <strong>Weight:</strong> {pokemon.weight.minimum} - {pokemon.weight.maximum}
-              </p>
-              <p className="card-text">
-                <strong>Height:</strong> {pokemon.height.minimum} - {pokemon.height.maximum}
-              </p>
+              <p className="card-text"><strong>Id:</strong> {pokemon.id}</p>
+              <p className="card-text"><strong>Number:</strong> {pokemon.number}</p>
+              <p className="card-text"><strong>Classification:</strong> {pokemon.classification}</p>
+              <p className="card-text"><strong>Types:</strong> {pokemon.types.join(', ')}</p>
+              <p className="card-text"><strong>Weight:</strong> {pokemon.weight.minimum} - {pokemon.weight.maximum}</p>
+              <p className="card-text"><strong>Height:</strong> {pokemon.height.minimum} - {pokemon.height.maximum}</p>
               <h3>Resistant</h3>
-              <ul>
-                {pokemon.resistant.map((res: string) => (
-                  <li key={res}>{res}</li>
-                ))}
-              </ul>
+              <ul>{pokemon.resistant.map((res) => <li key={res}>{res}</li>)}</ul>
               <h3>Weaknesses</h3>
-              <ul>
-                {pokemon.weaknesses.map((weak: string) => (
-                  <li key={weak}>{weak}</li>
-                ))}
-              </ul>
+              <ul>{pokemon.weaknesses.map((weak) => <li key={weak}>{weak}</li>)}</ul>
               <h3>Special Attacks</h3>
-              <ul>
-                {pokemon.attacks.special.map((attack: any) => (
-                  <li key={attack.name}>
-                    {attack.name} ({attack.type}) - {attack.damage} damage
-                  </li>
-                ))}
-              </ul>
+              <ul>{pokemon.attacks.special.map((attack) => (
+                <li key={attack.name}>{attack.name} ({attack.type}) - {attack.damage} damage</li>
+              ))}</ul>
               <h3>Evolutions</h3>
               {pokemon.evolutions ? (
                 <ul className="list-group">
-                  {pokemon.evolutions.map((evo: any) => (
+                  {pokemon.evolutions.map((evo) => (
                     <li key={evo.id} className="list-group-item">
-                      <a href={`/search?name=${evo.name}`} className="text-decoration-none">
-                        {evo.name}
-                      </a>
+                      <a href={`/search?name=${evo.name}`} className="text-decoration-none">{evo.name}</a>
                     </li>
                   ))}
                 </ul>
-              ) : (
-                <p>No Evolutions</p>
-              )}
+              ) : <p>No Evolutions</p>}
             </div>
           </div>
         )}

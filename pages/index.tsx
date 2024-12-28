@@ -3,6 +3,14 @@ import { gql } from '@apollo/client';
 import client from '../lib/apollo-client';
 import { useRouter } from 'next/router';
 
+interface Pokemon {
+    id: string;
+    number: string;
+    name: string;
+    types: string[];
+    image: string;
+}
+
 const GET_POKEMONS = gql`
   query GetPokemons($first: Int!) {
     pokemons(first: $first) {
@@ -16,10 +24,10 @@ const GET_POKEMONS = gql`
 `;
 
 export async function getStaticProps() {
-  const { data } = await client.query({
-    query: GET_POKEMONS,
-    variables: { first: 151 },
-  });
+    const { data } = await client.query<{ pokemons: Pokemon[] }>({
+        query: GET_POKEMONS,
+        variables: { first: 151 },
+      });
 
   return {
     props: {
@@ -29,12 +37,12 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home({ initialPokemons }: { initialPokemons: any[] }) {
-  const [pokemons, setPokemons] = useState(initialPokemons);
-  const [typeFilter, setTypeFilter] = useState('');
-  const [first, setFirst] = useState(151);
-  const [isNumberDisabled, setIsNumberDisabled] = useState(false);
-  const router = useRouter();
+export default function Home({ initialPokemons }: { initialPokemons: Pokemon[] }) {
+    const [pokemons, setPokemons] = useState<Pokemon[]>(initialPokemons);
+    const [typeFilter, setTypeFilter] = useState('');
+    const [first, setFirst] = useState(151);
+    const [isNumberDisabled, setIsNumberDisabled] = useState(false);
+    const router = useRouter();
 
   useEffect(() => {
     const fetchFilteredPokemons = async () => {
