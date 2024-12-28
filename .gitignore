@@ -16,6 +16,11 @@
 # next.js
 /.next/
 /out/
+/pages/search
+/pages/indexCopy.tsx
+/pages/evo.tsx
+/type
+/app_backup
 
 # production
 /build
